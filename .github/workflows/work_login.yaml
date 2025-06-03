@@ -1,23 +1,26 @@
-name: Instaloader with Session
+name: Download Instagram Stories
 
 on:
-  workflow_dispatch:  # запуск вручную
-  schedule:
-    - cron: '0 12 * * *'  # пример: запуск каждый день в 12:00 UTC
+  workflow_dispatch:
 
 jobs:
-  download:
+  download-stories:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Restore session file
-      run: echo "${{ secrets.IG_SESSION_B64 }}" | base64 -d > session-igor.smnv
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    - name: Install Instaloader
-      run: pip install instaloader
+      - name: Install Instaloader
+        run: pip install instaloader
 
-    - name: Run Instaloader
-      run: instaloader --sessionfile=session-igor.smnv igor.smnv --stories
+      - name: Restore session file from secret
+        run: echo "${{ secrets.IG_SESSION_B64 }}" | base64 -d > session-igor.smnv
+
+      - name: Download Instagram stories
+        run: instaloader --sessionfile=session-igor.smnv igor.smnv --stories --dirname-pattern=stories
