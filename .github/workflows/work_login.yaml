@@ -14,10 +14,10 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Restore session file
-      run: echo "${{ secrets.IG_SESSION_B64 }}" | base64 -d > session-igor
+      run: echo "${{ secrets.IG_SESSION_B64 }}" | base64 -d > session-igor.smnv
 
     - name: Install Instaloader
       run: pip install instaloader
 
     - name: Run Instaloader
-      run: instaloader --sessionfile=session-igor твой_логин --stories
+      run: instaloader --sessionfile=session-igor.smnv igor.smnv --stories
