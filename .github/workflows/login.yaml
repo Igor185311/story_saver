@@ -1,0 +1,32 @@
+name: One-time Instagram Login
+
+on:
+  workflow_dispatch:
+
+jobs:
+  login-instagram:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install instaloader
+
+      - name: Log in to Instagram and save session
+        env:
+          IG_USERNAME: ${{ secrets.IG_USERNAME }}
+          IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
+        run: |
+          instaloader --login $IG_USERNAME --password $IG_PASSWORD --sessionfile session-$IG_USERNAME
+          base64 session-$IG_USERNAME > session_encoded.txt
+
+      - name: Show session as base64
+        run: cat session_encoded.txt
