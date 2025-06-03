@@ -1,0 +1,23 @@
+name: Instaloader with Session
+
+on:
+  workflow_dispatch:  # запуск вручную
+  schedule:
+    - cron: '0 12 * * *'  # пример: запуск каждый день в 12:00 UTC
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Restore session file
+      run: echo "${{ secrets.IG_SESSION_B64 }}" | base64 -d > session-igor
+
+    - name: Install Instaloader
+      run: pip install instaloader
+
+    - name: Run Instaloader
+      run: instaloader --sessionfile=session-igor твой_логин --stories
